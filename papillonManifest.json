@@ -1,0 +1,20 @@
+{
+	"name": "Notifications",
+	"author": "andronedev",
+	"authorDisplayName": "Nicolas Chandelier",
+	"description": "Permet de recevoir les notifications de pronote",
+	"icon": "notifications",
+    "version": "1.0.0",
+	"javascript": [
+		"notifications.js"
+	],
+	"css": [],
+	"tabs": [
+		{
+		"name": "Notifications",
+		"icon": "notifications",
+		"path": "dev.androne.notifications",
+		"html": "notifications.html"
+		}
+	]
+}
