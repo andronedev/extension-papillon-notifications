@@ -5,7 +5,7 @@
     </span>
 
     <!-- status -->
-    <div class="status cours" style="--off: 10ms;">
+    <div class="cours file" style="--off: 10ms;">
         <span class="material-symbols-outlined">
             info
         </span>
@@ -65,8 +65,36 @@
                     document.getElementsByClassName("loading")[0].innerHTML = "<h1>Enregistré !</h1>";
                     setTimeout(() => {
                         document.getElementsByClassName("loading")[0].style.display = "none";
+                        updateUI()
                     }, 1000);
+                    Toastify({
+                        text: "Notifications activées !",
+                        duration: 3000,
+                        newWindow: true,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                        stopOnFocus: true,
+                        onClick: function () { }
+                    }).showToast();
+                    popup.close();
+
+                } else {
+                    Toastify({
+                        text: "Erreur lors de l'enregistrement",
+                        duration: 3000,
+                        newWindow: true,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "red",
+                        stopOnFocus: true,
+                        onClick: function () { }
+                    }).showToast();
+                    popup.close();
                 }
+
             }
         }, false);
 
@@ -75,41 +103,61 @@
     function unregister() {
         document.getElementsByClassName("loading")[0].style.display = "block";
         let jwt = localStorage.getItem("jwtNotificationsToken");
-        let askurl = `http://localhost:8080/unregister.html?jwt=${jwt}`;
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", `http://localhost:3000/logout`, true);
+        xhr.setRequestHeader("Authorization", jwt);
 
-        // open popup
-        let popup = window.open(askurl, "popup", "width=400,height=400");
-        // listen for message from popup
-        window.addEventListener("message", (event) => {
-            console.log(event.data);
-            // check if message is from popup
-            if (event.source == popup) {
-                console.log(event.data);
-                // check if message is from popup
-                if (event.data.success === true) {
-                    popup.close();
-                    console.log("Unregistered");
-                    localStorage.removeItem("jwtNotificationsToken");
-                    document.getElementsByClassName("loading")[0].innerHTML = "<h1>Désenregistré !</h1>";
-                    setTimeout(() => {
-                        document.getElementsByClassName("loading")[0].style.display = "none";
-                    }, 1000);
-                }
+        xhr.onload = function () {
+            if (xhr.status == 200) {
+                localStorage.removeItem("jwtNotificationsToken");
+                document.getElementsByClassName("loading")[0].innerHTML = "<h1>Désenregistré !</h1>";
+                setTimeout(() => {
+                    document.getElementsByClassName("loading")[0].style.display = "none";
+                    updateUI()
+                }, 1000);
+                Toastify({
+                    text: "Notifications désactivées !",
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                    stopOnFocus: true,
+                    onClick: function () { }
+                }).showToast();
+            } else {
+                Toastify({
+                    text: "Erreur lors de la désinscription",
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "red",
+                    stopOnFocus: true,
+                    onClick: function () { }
+                }).showToast();
             }
-        }, false);
+        }
+        xhr.send();
+
 
     }
 
-    if (localStorage.getItem("jwtNotificationsToken") === null) {
-        document.getElementById("n_enabled").style.display = "block";
-        document.getElementById("n_disabled").style.display = "none";
-        document.getElementsByClassName("status")[0].style.display = "none";
+    function updateUI() {
+        if (localStorage.getItem("jwtNotificationsToken") === null) {
+            document.getElementById("n_enabled").style.display = "block";
+            document.getElementById("n_disabled").style.display = "none";
+            document.getElementById("status").innerHTML = "Désactivé";
 
-    } else {
-        document.getElementById("n_enabled").style.display = "none";
-        document.getElementById("n_disabled").style.display = "block";
-        document.getElementsByClassName("status")[0].style.display = "block";
-        getNotifications();
+        } else {
+            document.getElementById("n_enabled").style.display = "none";
+            document.getElementById("n_disabled").style.display = "block";
+            document.getElementById("status").innerHTML = "Activé";
+            getNotifications();
+
+        }
 
     }
 
@@ -121,18 +169,18 @@
         let askurl = `http://localhost:3000/notifications`;
         let xhr = new XMLHttpRequest();
         xhr.open("GET", askurl, true);
-        xhr.setRequestHeader("Authorization", `Bearer ${jwt}`);
+        xhr.setRequestHeader("Authorization", jwt);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 let data = JSON.parse(xhr.responseText);
                 if (data.success === true) {
-                    document.getElementById("status").innerHTML = data.notifications.length;
+                    document.getElementById("status").innerHTML += "<br>Nombre de notifications : " + data.notifications.length;
                 }
-                
+
             }
         }
         xhr.send();
     }
 
-    
+    updateUI();
 </script>
