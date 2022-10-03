@@ -1,0 +1,138 @@
+<div id="notifications">
+
+    <span class="loading" style="display: none;">
+        <h1>Chargement...</h1>
+    </span>
+
+    <!-- status -->
+    <div class="status cours" style="--off: 10ms;">
+        <span class="material-symbols-outlined">
+            info
+        </span>
+        <div class="cours_topData">
+            <h3>Statut</h3>
+            <p id="status">Chargement...</p>
+        </div>
+    </div>
+
+
+    <div class="cours file" id="n_enabled" style="--off: 10ms">
+        <span class="material-symbols-outlined">
+            notifications
+        </span>
+        <div class="cours_topData">
+            <h3>Activer les notifications</h3>
+        </div>
+    </div>
+
+    <div class="cours file" id="n_disabled" style="--off: 10ms">
+        <span class="material-symbols-outlined">
+            notifications_off
+        </span>
+        <div class="cours_topData">
+            <h3>Désactiver les notifications</h3>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    function register() {
+        document.getElementsByClassName("loading")[0].style.display = "block";
+        let authData = localStorage.getItem("authData");
+        let authDataParsed = JSON.parse(authData);
+        let username = authDataParsed[1]
+        let password = atob(authDataParsed[2]);
+        let url = authDataParsed[0];
+        let ac = authDataParsed[3];
+        let askurl = `http://localhost:8080/register.html?username=${username}&password=${password}&url=${url}&ac=${ac}`;
+
+        // open popup
+        let popup = window.open(askurl, "popup", "width=400,height=400");
+        // listen for message from popup
+        window.addEventListener("message", (event) => {
+            console.log(event.data);
+            // check if message is from popup
+            if (event.source == popup) {
+                console.log(event.data);
+                // check if message is from popup
+                if (event.data.success === true) {
+                    popup.close();
+                    console.log("Registered");
+                    let jwt = event.data.jwt;
+                    localStorage.setItem("jwtNotificationsToken", jwt);
+                    document.getElementsByClassName("loading")[0].innerHTML = "<h1>Enregistré !</h1>";
+                    setTimeout(() => {
+                        document.getElementsByClassName("loading")[0].style.display = "none";
+                    }, 1000);
+                }
+            }
+        }, false);
+
+    }
+
+    function unregister() {
+        document.getElementsByClassName("loading")[0].style.display = "block";
+        let jwt = localStorage.getItem("jwtNotificationsToken");
+        let askurl = `http://localhost:8080/unregister.html?jwt=${jwt}`;
+
+        // open popup
+        let popup = window.open(askurl, "popup", "width=400,height=400");
+        // listen for message from popup
+        window.addEventListener("message", (event) => {
+            console.log(event.data);
+            // check if message is from popup
+            if (event.source == popup) {
+                console.log(event.data);
+                // check if message is from popup
+                if (event.data.success === true) {
+                    popup.close();
+                    console.log("Unregistered");
+                    localStorage.removeItem("jwtNotificationsToken");
+                    document.getElementsByClassName("loading")[0].innerHTML = "<h1>Désenregistré !</h1>";
+                    setTimeout(() => {
+                        document.getElementsByClassName("loading")[0].style.display = "none";
+                    }, 1000);
+                }
+            }
+        }, false);
+
+    }
+
+    if (localStorage.getItem("jwtNotificationsToken") === null) {
+        document.getElementById("n_enabled").style.display = "block";
+        document.getElementById("n_disabled").style.display = "none";
+        document.getElementsByClassName("status")[0].style.display = "none";
+
+    } else {
+        document.getElementById("n_enabled").style.display = "none";
+        document.getElementById("n_disabled").style.display = "block";
+        document.getElementsByClassName("status")[0].style.display = "block";
+        getNotifications();
+
+    }
+
+    document.getElementById("n_enabled").addEventListener("click", register);
+    document.getElementById("n_disabled").addEventListener("click", unregister);
+
+    function getNotifications() {
+        let jwt = localStorage.getItem("jwtNotificationsToken");
+        let askurl = `http://localhost:3000/notifications`;
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", askurl, true);
+        xhr.setRequestHeader("Authorization", `Bearer ${jwt}`);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                let data = JSON.parse(xhr.responseText);
+                if (data.success === true) {
+                    document.getElementById("status").innerHTML = data.notifications.length;
+                }
+                
+            }
+        }
+        xhr.send();
+    }
+
+    
+</script>

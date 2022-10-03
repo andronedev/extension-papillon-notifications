@@ -14,7 +14,7 @@
 		"name": "Notifications",
 		"icon": "notifications",
 		"path": "dev.androne.notifications",
-		"html": "notifications.html"
+		"html": "settings.html"
 		}
 	]
 }
