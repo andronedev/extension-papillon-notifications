@@ -6,7 +6,7 @@
 	"icon": "notifications",
     "version": "1.0.0",
 	"javascript": [
-		"notifications.js"
+		"notificationsService.js"
 	],
 	"css": [],
 	"tabs": [
