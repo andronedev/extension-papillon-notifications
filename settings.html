@@ -50,6 +50,8 @@
 </style>
 
 <script>
+    
+    
     function register() {
         document.getElementsByClassName("loading")[0].style.display = "block";
         let authData = localStorage.getItem("authData");
@@ -58,7 +60,7 @@
         let password = atob(authDataParsed[2]);
         let url = authDataParsed[0];
         let ac = authDataParsed[3];
-        let askurl = `http://localhost:3000/embed/register?username=${username}&password=${password}&url=${url}&ac=${ac}`;
+        let askurl = `${API_NOTIFICATIONS_URL}/embed/register?username=${username}&password=${password}&url=${url}&ac=${ac}`;
 
         // open popup
         let popup = window.open(askurl, "popup", "width=400,height=400");
@@ -120,7 +122,7 @@
         let password = atob(authDataParsed[2]);
         let url = authDataParsed[0];
         let ac = authDataParsed[3];
-        let askurl = `http://localhost:3000/embed/unregister?jwt=${localStorage.getItem("jwtNotificationsToken")}`;
+        let askurl = `${API_NOTIFICATIONS_URL}/embed/unregister?jwt=${localStorage.getItem("jwtNotificationsToken")}`;
 
         // open popup
         let popup = window.open(askurl, "popup", "width=400,height=400");
@@ -197,7 +199,7 @@
 
     function getNotifications() {
         let jwt = localStorage.getItem("jwtNotificationsToken");
-        let askurl = `http://localhost:3000/notifications`;
+        let askurl = `${API_NOTIFICATIONS_URL}/notifications`;
         let xhr = new XMLHttpRequest();
         xhr.open("GET", askurl, true);
         xhr.setRequestHeader("Authorization", jwt);

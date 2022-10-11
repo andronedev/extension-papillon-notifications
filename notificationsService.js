@@ -1,10 +1,7 @@
-function checkForLogin() {
-    if (typeof (Storage) !== "undefined") {
-        if (localStorage.getItem("jwtNotificationsToken") !== null) {
-            return true;
-        }
-    }
-    return false;
+const API_NOTIFICATIONS_URL = "http://localhost:3000";
+
+function isLogged() {
+    return localStorage.getItem("jwtNotificationsToken") !== null;
 }
 
 function openNotificationsSettings() {
@@ -16,16 +13,16 @@ function openNotificationsSettings() {
     });
 
 }
-if (!checkForLogin()) {
+
+if (!isLogged()) {
     Toastify({
-        text: "Vous n\'avez pas configuré les notifications. Cliquez ici pour les configurer.",
+        text: "Vous n'avez pas encore configuré les notifications. Cliquez ici pour le faire.",
         duration: 5000,
-        close: true,
         gravity: "top",
         position: "right",
-        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+        backgroundColor: "red",
         stopOnFocus: true,
-        onClick: function () { 
+        onClick: function () {
             openNotificationsSettings();
         }
     }).showToast();
