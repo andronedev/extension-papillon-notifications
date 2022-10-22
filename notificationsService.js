@@ -4,7 +4,7 @@ function isLogged() {
     return new Promise(function (resolve, reject) {
         let token = localStorage.getItem("jwtNotificationsToken")
         if (token) {
-            fetch(API_NOTIFICATIONS_URL + "/login/?token=" + token, {
+            fetch(API_NOTIFICATIONS_URL + "/login?token=" + token, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -33,7 +33,7 @@ function isLogged() {
 function openNotificationsSettings() {
 
     document.querySelectorAll(".tabLink").forEach(function (element) {
-        if (element.id.toLowerCase().includes("/notifications/settings.html")) {
+        if (element.id.toLowerCase().endsWith("/notifications/settings.html")) {
             element.click();
         }
     });
