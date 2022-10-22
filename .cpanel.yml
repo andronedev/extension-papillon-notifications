@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/chni5636/androne.dev/papillonnotifications
+    - /bin/cp -R . $DEPLOYPATH
+    - sed -i 's/http:\/\/localhost:8080/https:\/\/androne.dev\/papillonnotifications/g' $DEPLOYPATH/Notifications/notificationsService.js
+
