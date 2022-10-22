@@ -3,5 +3,5 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/chni5636/androne.dev/papillonnotifications
     - /bin/cp -R . $DEPLOYPATH
-    - sed -i 's/http:\/\/localhost:3000/https:\/\/pronotepush.androne.dev/g' $DEPLOYPATH/Notifications/notificationsService.js
+    - sed -i 's/http:\/\/localhost:3000/https:\/\/pronotepush.androne.dev/g' $DEPLOYPATH/notificationsService.js
     - chmod -R 777 $DEPLOYPATH
