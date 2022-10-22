@@ -40,19 +40,19 @@
 </div>
 
 <style>
-    #notifications{
-        margin: 10px;
-    }
-    #notificationsHistory .cours_topData{
+    #notifications {
         margin: 10px;
     }
 
+    #notificationsHistory .cours_topData {
+        margin: 10px;
+    }
 </style>
 
 <script>
-    
-    
-    function register() {
+
+
+    function register(retry = false) {
         document.getElementsByClassName("loading")[0].style.display = "block";
         let authData = localStorage.getItem("authData");
         let authDataParsed = JSON.parse(authData);
@@ -61,7 +61,6 @@
         let url = authDataParsed[0];
         let ac = authDataParsed[3];
         let askurl = `${API_NOTIFICATIONS_URL}/embed/register?username=${username}&password=${password}&url=${url}&ac=${ac}`;
-
         // open popup
         let popup = window.open(askurl, "popup", "width=400,height=400");
         // listen for message from popup
@@ -111,10 +110,10 @@
 
             }
         }, false);
-
+     
     }
 
-    function unregister() {
+    function unregister(retry = false) {
         document.getElementsByClassName("loading")[0].style.display = "block";
         let authData = localStorage.getItem("authData");
         let authDataParsed = JSON.parse(authData);
@@ -123,7 +122,6 @@
         let url = authDataParsed[0];
         let ac = authDataParsed[3];
         let askurl = `${API_NOTIFICATIONS_URL}/embed/unregister?jwt=${localStorage.getItem("jwtNotificationsToken")}`;
-
         // open popup
         let popup = window.open(askurl, "popup", "width=400,height=400");
         // listen for message from popup
@@ -173,7 +171,7 @@
 
             }
         }, false);
-
+     
     }
 
     function updateUI() {
@@ -214,7 +212,7 @@
                     let notificationsHTML = `               
                         <h2>Historique des notifications</h2>
                     `;
-              
+
                     for (let i = 0; i < notifications.length; i++) {
                         notificationsHTML += `
                         
